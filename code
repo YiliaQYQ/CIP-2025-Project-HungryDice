@@ -1,0 +1,54 @@
+import random
+import json
+import os
+
+DATA_FILE = 'restaurants.json'
+
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r') as file:
+            return json.load(file)
+    return {}
+
+def save_data(data):
+    with open(DATA_FILE, 'w') as file:
+        json.dump(data, file, indent=2)
+
+def add_restaurant(data):
+    style = input("Enter the cuisine/style (e.g., Chinese, Italian): ").strip()
+    name = input("Enter the name of the restaurant: ").strip()
+    if style not in data:
+        data[style] = []
+    data[style].append(name)
+    print(f"✅ Added '{name}' under '{style}'!")
+    return data
+
+def suggest_restaurant(data):
+    style = input("Enter the cuisine/style you’re in the mood for: ").strip()
+    if style in data and data[style]:
+        print(f"🎲 You should try: {random.choice(data[style])}")
+    else:
+        print(f"❌ No restaurants found for style: {style}")
+
+def main():
+    data = load_data()
+    while True:
+        print("\n--- Restaurant Recommender ---")
+        print("1. Add a restaurant")
+        print("2. Suggest a restaurant")
+        print("3. Exit")
+        choice = input("Choose an option (1/2/3): ").strip()
+
+        if choice == '1':
+            data = add_restaurant(data)
+            save_data(data)
+        elif choice == '2':
+            suggest_restaurant(data)
+        elif choice == '3':
+            print("👋 Bye!")
+            break
+        else:
+            print("❗ Invalid choice, try again.")
+
+if __name__ == "__main__":
+    main()
